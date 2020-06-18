@@ -1,0 +1,89 @@
+
+html {
+	font-family: 'Rajdhani', sans-serif;
+	font: 16px 'Rajdhani', sans-serif;
+}
+
+h1 {
+   font-size: 40px;
+}
+
+.basic-grid {
+	display: grid;
+	margin-right: 12px;
+	gap: 2rem;
+	grid-template-columns: repeat(auto-fit,minmax(240px, 1fr));
+	
+	--stagger-delay: 100ms;
+}
+@keyframes cardEntrance {
+	from {
+		opacity: 0;
+		transform: scale(0.3);
+	}
+	to{
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	padding: 7px;
+	box-shadow: grey;
+	height: 100%;
+	width: 100%;
+	transition: all 200ms;
+	animation: cardEntrance 700ms ease-out;
+}
+
+.centered {
+	place-items: center;
+	margin-right: 20% !important;
+}
+
+@media screen and (min-width: 600px) {
+	.tall {
+		grid-row: span 2 / auto;
+	}
+	
+	.wide {
+		grid-column: span 2 / auto;
+	}
+}
+
+
+.black {
+	background: black;
+	color: white;
+}
+
+.blue {
+	background: #74b8f0;
+}
+
+.red {
+	background: #f59264;
+}
+
+input {
+	background: inherit;
+	font-size:18px;
+	padding:10px 10px 10px 5px;
+	display:block;
+	width:50%;
+	border:none;
+	border-bottom:1px solid #757575;
+	color: inherit;
+	margin-bottom: 3px;
+  }
+
+input:focus { 
+	outline:none; 
+}
+
+/*.card:hover {
+	box-shadow: aqua;
+	transform: translate(-3px) scale(1.1);
+}*/

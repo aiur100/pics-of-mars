@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> 
+<html class="no-js"> <!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Test View</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="css/main.css">
+	</head>
+	<body>
+		<!--[if lt IE 7]>
+			<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+		<![endif]-->
+		<div>
+
+			<section class="basic-grid">
+
+				<div class="card wide centered">
+					<h1 style="margin: 1%;">Mars Photos	
+					</h1>
+				</div>
+
+
+			</section>
+
+			<section class="basic-grid">
+
+				<div class="card wide centered">
+					<input type="date" id="photo-date" name="photo-date"/>
+				</div>
+
+			</section>
+
+			<section class="basic-grid" id="message-container">
+
+				
+
+			</section>
+
+			<section class="basic-grid" id="photo-container">
+
+				
+
+			</section>
+
+		</div>
+		
+	</body>
+	<script>
+		function formatDate(date) {
+			var d = new Date(date),
+				month = '' + (d.getMonth() + 1),
+				day = '' + d.getDate(),
+				year = d.getFullYear();
+
+			if (month.length < 2) 
+				month = '0' + month;
+			if (day.length < 2) 
+				day = '0' + day;
+
+			return [year, month, day].join('-');
+		}
+
+		const dateInput = document.getElementById('photo-date');
+
+		async function loadPhotosasync (){
+			const messageContainer = document.getElementById('message-container');
+			const statusMessage = document.createElement('div');
+			const dateMessage = document.createElement('div');
+			
+			const today = dateInput.value;
+			dateMessage.classList.add('card');
+			statusMessage.classList.add("card");
+			statusMessage.classList.add("centered");
+			statusMessage.classList.add("wide");
+			statusMessage.innerHTML = `<b>Loading...</b>`;
+			dateMessage.innerHTML = `Photos Taken Today (${today})`;
+			try{
+				const container = document.getElementById('photo-container');
+				container.innerHTML = "";
+				messageContainer.innerHTML = "";
+				messageContainer.appendChild(statusMessage);
+				messageContainer.appendChild(dateMessage);
+
+				const result = await fetch(`https://gj1wp7zuxk.execute-api.us-east-1.amazonaws.com/dev/mars-photos?date=${today}`);
+				const data = await result.json();
+
+				statusMessage.innerHTML = "<b>Download complete... processing...<b>";
+				
+				if(data.photos && data.photos.length > 0){
+					statusMessage.innerHTML = `<b>Processing ${data.photos.length} photos...<b>`;
+					data.photos.forEach(photo => {
+						const card = document.createElement('div');
+						const p = document.createElement('p');
+						p.innerHTML = `<b>${photo.rover.name}</b> - ${photo.camera.name}`;
+						card.classList.add('card');
+		
+						const img = document.createElement('img');
+						img.src = photo.img_src;
+						img.onload = function(e){
+							if(img.naturalHeight > 512){
+								card.classList.add("tall");
+							}
+						}
+						card.appendChild(p);
+						card.appendChild(img);
+						container.appendChild( card );
+					});
+					statusMessage.innerHTML = `<b>${data.photos.length} processed and displayed. Enjoy!<b>`;
+				}
+				else{
+					statusMessage.innerHTML = `<b>No photos to show right now</b>`;
+				}
+			}
+			catch(error){
+				console.error("NASA ERROR: ",error);
+				statusMessage.classList.add('red');
+				statusMessage.innerHTML = "<b>ERROR:</b>"+error;
+			}
+		};
+
+		dateInput.onchange = function(e){
+			loadPhotosasync();
+		}
+
+		dateInput.value = formatDate(new Date());
+		loadPhotosasync();
+		
+	</script>
+</html>

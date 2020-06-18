@@ -1,0 +1,12 @@
+{
+  "name": "mars-photos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy-api": "cd api && sls deploy --aws-profile pasley_hill_admin",
+    "deploy-web": "aws s3 sync web s3://picsofmars.com --acl=public-read --cache-control 'max-age=0'  --delete --exclude=\".idea/*\" --exclude=\"src/*\" --exclude=README.md --exclude=\"node_modules/*\"  --exclude=\"api_src/*\" --exclude=\"webpack.config.js\" --exclude=\"webpack.config.prod.js\" --exclude=\"*.json\" --exclude=\"*.gitignore*\" --exclude=\".git/*\" --profile pasley_hill_admin "
+  },
+  "author": "",
+  "license": "ISC"
+}

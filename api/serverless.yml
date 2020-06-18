@@ -1,0 +1,15 @@
+service: mars-photos
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+functions:
+  marsPhotos:
+    handler: handler.marsPhotos
+    environment:
+      NASA_API_KEY: ${ssm:/NASA_API~true}
+    events:
+      - http:
+          path: mars-photos
+          method: get
+          cors: true
